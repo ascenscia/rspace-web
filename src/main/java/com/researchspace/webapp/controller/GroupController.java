@@ -46,7 +46,13 @@ import com.researchspace.model.views.GroupInvitation;
 import com.researchspace.model.views.GroupListResult;
 import com.researchspace.model.views.ServiceOperationResultCollection;
 import com.researchspace.model.views.UserView;
-import com.researchspace.service.*;
+import com.researchspace.service.AutoshareManager;
+import com.researchspace.service.CommunicationManager;
+import com.researchspace.service.CommunityServiceManager;
+import com.researchspace.service.IContentInitializer;
+import com.researchspace.service.IGroupCreationStrategy;
+import com.researchspace.service.MessageOrRequestCreatorManager;
+import com.researchspace.service.SystemPropertyPermissionManager;
 import com.researchspace.session.SessionAttributeUtils;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -211,10 +217,6 @@ public class GroupController extends BaseController {
   @GetMapping("/viewPIGroup")
   public String viewPIGroup() {
     User subject = userManager.getAuthenticatedUserInSession();
-    if (!subject.hasRole(Role.PI_ROLE)) {
-      String msg = authGenerator.getFailedMessage(subject.getUsername(), " view PI's group");
-      throw new AuthorizationException(msg);
-    }
     Group piGroup = subject.getPrimaryLabGroupWithPIRole();
     if (piGroup != null) {
       return "redirect:/groups/view/" + piGroup.getId();
